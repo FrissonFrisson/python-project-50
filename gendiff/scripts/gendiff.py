@@ -31,7 +31,7 @@ def gen_diff(path_file_1, path_file_2):
         elif file_1[key] != file_2[key]:
             result.append(f'  - {key}: {file_1[key]}')
             result.append(f'  + {key}: {file_2[key]}')
-    return formating_json('{\n'+'\n'.join(result)+"\n}")
+    return formating_json('{\n'+'\n'.join(result)+'\n}')
 
 
 def formating_json(string):
