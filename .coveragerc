@@ -1,0 +1,15 @@
+[run]
+source = gendiff
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    def __repr__
+    def __str__
+    def __init__
+    def __enter__
+    def __exit__
+
+[html]
+directory = coverage_report

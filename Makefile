@@ -17,5 +17,18 @@ lint:
 gendiff:
 	poetry run gendiff
 
+test:
+	poetry run pytest
 
-.PHONY: gendiff
+test-coverage:
+	poetry run pytest --cov=hexlet_python_package --cov-report xml
+
+selfcheck:
+	poetry check
+
+check: selfcheck test lint selfcheck check build
+
+
+
+
+.PHONY: gendiff test lint 
