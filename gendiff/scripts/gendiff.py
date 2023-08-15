@@ -18,19 +18,7 @@ def main():
 
 def gen_diff(path_file_1, path_file_2):
     file_1, file_2 = tools.load_file(path_file_1, path_file_2)
-    keys = sorted(file_1.keys() | file_2.keys())
-    result = []
-    for key in keys:
-        if key not in file_1:
-            result.append(f'  + {key}: {file_2[key]}')
-        elif key not in file_2:
-            result.append(f'  - {key}: {file_1[key]}')
-        elif file_1[key] == file_2[key]:
-            result.append(f'    {key}: {file_1[key]}')
-        elif file_1[key] != file_2[key]:
-            result.append(f'  - {key}: {file_1[key]}')
-            result.append(f'  + {key}: {file_2[key]}')
-    return tools.formating(result)
+    return tools.formating(tools.parsing(file_1, file_2))
 
 
 if __name__ == '__main__':
