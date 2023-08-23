@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from gendiff.scripts import tools
+from gendiff import tools
 
 
 def main():
