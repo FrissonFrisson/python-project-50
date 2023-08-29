@@ -33,7 +33,8 @@ def formating_children(d, symb='    ', count=1, depth=1):
         if isinstance(value, dict):
             result.append(formating_children(value, symb, count, depth+1))
         else:
-            result.append(f'{indent}{key} : {value}')
+            result.append(f'\n{{{indent}{key} : {value}')
+            result.append(indent+'}')
     return '\n'.join(result)
 
 def formating(data, symb='    ', count=1, depth=1):
