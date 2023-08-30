@@ -26,42 +26,50 @@ def formating_value(string):
     string = string.replace('None', 'null')
     return string
 
-def formating_child(d, curent_indent = '', symb='    ', count=1, depth=1):
-    result = []
-    indent = (symb * count * depth)+curent_indent
-    for key, value in d.items():
-        if isinstance(value, dict):
-            result.append(indent+key+': {')
-            result.append(formating_child(value, curent_indent, depth=depth+1))
-            result.append(indent+'}')
-        else:
-            result.append(f'{indent}{key}: {value}')
-    return '\n'.join(result)
 
-def formating(data, symb='    ', count=1, depth=1):
-    result = []
-    indent = symb * count * depth
-
-    for groups, value in data.items():
-        symb_diff = '  '
-        if isinstance(value, dict):
-            result.append(f'{indent}{symb_diff}{groups}: ')
-            result.append(formating(value, symb, count, depth + 1))
-        else:
-            if isinstance(value[0], dict):
-                curent_indent = indent+symb_diff
-                child = formating_child(value[0], curent_indent , symb, count) 
-                value = ('{\n' + child + '\n' + curent_indent +'}', *value[1:])
-            symb_diff = '+ ' if value[1] == "missing_file_1" else symb_diff
-            symb_diff = '- ' if value[1] == "missing_file_2" else symb_diff
-            if "different value" not in value:
-                result.append(f'{indent}{symb_diff}{groups}: {value[0]}')
+def formating_child(child, cur_indent='', cur_depth = 0, symb='    ', count=1):
+    def inner(child, depth=1):
+        result = []
+        depth += count
+        indent = (symb * depth)+cur_indent
+        for key, value in child.items():
+            if isinstance(value, dict):
+                result.append(indent + key + ': {')
+                result.append(inner(value, depth+1))
+                result.append(indent + '}')
             else:
-                result.append(f'{indent}- {groups}: {value[0]}')
-                result.append(f'{indent}+ {groups}: {value[1]}')
+                result.append(f'{indent}{key}: {value}')
+        return '\n'.join(result)
+    return '{\n'+inner(child,count)+'\n' + cur_indent + '}'
 
 
-    return formating_value('\n'.join(result))
+def formating(data, symb='  ', count=1):
+    def inner(data, depth=0):
+        result = []
+        depth += count
+        indent = symb * depth
+        for groups, value in data.items():
+            symb_diff = '  '
+            if 'equal keys' in value:
+                result.append(f'{indent}{symb_diff}{groups}: {{')
+                result.append(inner(value[0], depth + 1))
+                result.append(indent+symb_diff+'}')    
+            else:
+                if isinstance(value[0], dict):
+                    cur_indent = indent+symb_diff
+                    args_for_formating = (cur_indent, depth, symb, count)
+                    child = formating_child(value[0], *args_for_formating)
+                    value = (child, *value[1:])
+                if "different value" in value:
+                    result.append(f'{indent}- {groups}: {value[0]}')
+                    result.append(f'{indent}+ {groups}: {value[1]}')
+                else:
+                    symb_diff = '  ' if "equal" in value else symb_diff
+                    symb_diff = '+ ' if "missing_file_1" in value else symb_diff
+                    symb_diff = '- ' if "missing_file_2" in value else symb_diff
+                    result.append(f'{indent}{symb_diff}{groups}: {value[0]}')
+        return '\n'.join(result)
+    return formating_value('{\n'+inner(data)+'\n}')
 
 
 def find_differences(file_1, file_2):
@@ -76,8 +84,7 @@ def find_differences(file_1, file_2):
         elif value_1 == value_2:
             result[key] = (value_1, 'equal')
         elif isinstance(value_1, dict) and isinstance(value_2, dict):
-            result[key] = (find_differences(value_1, value_2))
+            result[key] = (find_differences(value_1, value_2), "equal keys")
         else:
             result[key] = (value_1, value_2, "different value")
-    print(result)
     return result
