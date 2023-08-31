@@ -18,7 +18,7 @@ def main():
 
 def gen_diff(path_file_1, path_file_2):
     file_1, file_2 = tools.parsing(path_file_1, path_file_2)
-    return tools.formating(tools.find_differences(file_1, file_2))
+    return tools.stylish(tools.find_differences(file_1, file_2))
 
 
 if __name__ == '__main__':

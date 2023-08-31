@@ -43,7 +43,7 @@ def formating_child(child, cur_indent='', symb='    ', count=1):
     return '{\n'+inner(child, count)+'\n' + cur_indent + '}'
 
 
-def formating(data, symb='  ', count=1):
+def stylish(data, symb='  ', count=1):
     def inner(data, depth=0):
         result = []
         depth += count
