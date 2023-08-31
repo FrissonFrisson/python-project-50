@@ -27,7 +27,7 @@ def formating_value(string):
     return string
 
 
-def formating_child(child, cur_indent='', cur_depth = 0, symb='    ', count=1):
+def formating_child(child, cur_indent='', symb='    ', count=1):
     def inner(child, depth=1):
         result = []
         depth += count
@@ -40,7 +40,7 @@ def formating_child(child, cur_indent='', cur_depth = 0, symb='    ', count=1):
             else:
                 result.append(f'{indent}{key}: {value}')
         return '\n'.join(result)
-    return '{\n'+inner(child,count)+'\n' + cur_indent + '}'
+    return '{\n'+inner(child, count)+'\n' + cur_indent + '}'
 
 
 def formating(data, symb='  ', count=1):
@@ -53,11 +53,11 @@ def formating(data, symb='  ', count=1):
             if 'equal keys' in value:
                 result.append(f'{indent}{symb_diff}{groups}: {{')
                 result.append(inner(value[0], depth + 1))
-                result.append(indent+symb_diff+'}')    
+                result.append(indent+symb_diff+'}')
             else:
                 if isinstance(value[0], dict):
                     cur_indent = indent+symb_diff
-                    args_for_formating = (cur_indent, depth, symb, count)
+                    args_for_formating = (cur_indent, symb, count)
                     child = formating_child(value[0], *args_for_formating)
                     value = (child, *value[1:])
                 if "different value" in value:
