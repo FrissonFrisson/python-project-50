@@ -27,12 +27,12 @@ def formating_value(string):
     return string
 
 
-def formating_child(child, cur_indent='', symb='    ', count=1):
-    def inner(child, depth=1):
+def formating_no_child(no_child, cur_indent='', symb='    ', count=1):
+    def inner(no_child, depth=1):
         result = []
         depth += count
         indent = (symb * depth)+cur_indent
-        for key, value in child.items():
+        for key, value in no_child.items():
             if isinstance(value, dict):
                 result.append(indent + key + ': {')
                 result.append(inner(value, depth+1))
@@ -40,7 +40,7 @@ def formating_child(child, cur_indent='', symb='    ', count=1):
             else:
                 result.append(f'{indent}{key}: {value}')
         return '\n'.join(result)
-    return '{\n'+inner(child, count)+'\n' + cur_indent + '}'
+    return '{\n'+inner(no_child, count)+'\n' + cur_indent + '}'
 
 
 def stylish(data, symb='  ', count=1):
@@ -58,8 +58,8 @@ def stylish(data, symb='  ', count=1):
                 if isinstance(value[0], dict):
                     cur_indent = indent+symb_diff
                     args_for_formating = (cur_indent, symb, count)
-                    child = formating_child(value[0], *args_for_formating)
-                    value = (child, *value[1:])
+                    no_child = formating_no_child(value[0], *args_for_formating)
+                    value = (no_child, *value[1:])
                 if "different value" in value:
                     result.append(f'{indent}- {groups}: {value[0]}')
                     result.append(f'{indent}+ {groups}: {value[1]}')
