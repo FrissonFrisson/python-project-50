@@ -20,91 +20,80 @@ def parsing(path_1, path_2):
     return file_1, file_2
 
 
-def formating_groups(string):
+def formating_to_json(string):
     string = string.replace('True', 'true')
     string = string.replace('False', 'false')
     string = string.replace('None', 'null')
     return string
 
 
-def formating_no_child(no_child, cur_indent='', symb='    ', count=1):
-    def inner(no_child, depth=1):
+def formating_value(value, indent, depth=0):
+    if not isinstance(value, dict):
+        return formating_to_json(str(value))
+
+    def inner(value, depth):
         result = []
-        depth += count
-        indent = (symb * depth)+cur_indent
-        for key, value in no_child.items():
+        child_indent = indent*depth
+        for key, value in value.items():
             if isinstance(value, dict):
-                result.append(f'{indent}{key}: {{')
-                result.append(inner(value, depth+1)) #go to next level tree
-                result.append(indent + '}')
+                result.append(f'{child_indent}{key}: {{')
+                result.append(f'{inner(value, depth + 1)}')
             else:
-                result.append(f'{indent}{key}: {value}')
-        return '\n'.join(result)
-    return '{\n'+inner(no_child, count)+'\n' + cur_indent + '}' #Final format
+                result.append(f'{child_indent}{key}: {value}')
+        result.append(indent*(depth-1)+'}')
+        return formating_to_json('\n'.join(result))
+
+    return '{'+'\n'+inner(value, depth)
 
 
-def format_stylish(data, symb='  ', count=1):
-    def inner(data, depth=0):
+def format_stylish(data, symb=' ', count=4):
+    def inner(data, depth=1):
         result = []
-        depth += count
-        indent = symb * depth
-        for key, groups in data.items():
-            symb_diff = ' ' #Default diff symbol if groupss is equal
-            if 'children' in groups:
-                result.append(f'{indent}{symb_diff} {key}: {{') 
-                result.append(inner(groups[0], depth + 1)) #go to next level tree
+        indent = (symb * count * depth)[:-2]
+        for diff in data:
+            key = diff.get('key')
+            value = diff.get('value')
+            status = diff.get('status')
+            symb_diff = ' '  # default symb if values is equal
+            symb_diff = '+' if status == 'missing_file_1' else symb_diff
+            symb_diff = '-' if status == 'missing_file_2' else symb_diff
+            if status == 'nested':
+                result.append(f'{indent}{symb_diff} {key}: {{')
+                result.append(inner(diff['nested'], depth + 1))
                 result.append(f'{indent}{symb_diff} }}')
             else:
-                if isinstance(groups[0], dict): #it`s not children
-                    cur_indent = indent+symb_diff+" "
-                    args_for_formating = (cur_indent, symb, count)
-                    no_child = formating_no_child(groups[0], *args_for_formating)
-                    groups = (no_child, *groups[1:])
-                if 'different values' in groups:
-                    result.append(f'{indent}- {key}: {groups[0]}')
-                    result.append(f'{indent}+ {key}: {groups[1]}')
+                value = formating_value(value, symb*count, depth+1)
+                if status == 'different':
+                    symb_diff = ['-', '+']
+                    for value, symb_diff in zip(diff.get('value'), symb_diff):
+                        value = formating_value(value, symb*count, depth+1)
+                        result.append(f'{indent}{symb_diff} {key}: {value}')
                 else:
-                    symb_diff = ' ' if 'equal' in groups else symb_diff
-                    symb_diff = '+' if 'missing_file_1' in groups else symb_diff
-                    symb_diff = '-' if 'missing_file_2' in groups else symb_diff
-                    result.append(f'{indent}{symb_diff} {key}: {groups[0]}')
+                    result.append(f'{indent}{symb_diff} {key}: {value}')
         return '\n'.join(result)
-    return formating_groups('{\n'+inner(data)+'\n}')
-
-
-def format_plain(data):
-    def inner(data, key_tree=''):
-        diff_property = ''
-        result = []
-        for key, groups in data.items():
-            key_tree += key
-            if 'children' in groups:
-                result.append(f'{inner(groups[0], key_tree)}') #go to next level tree
-            else:
-                if isinstance(groups[0], dict): #it`s not children
-                    groups = ('[complex value]', *groups[1:])
-                if 'equal' not in groups:
-                    diff_property = f'{key_tree} was updated. From {groups[0]} to {groups[1]}' if 'different values' in groups else diff_property
-                    diff_property = f'{key_tree} was added with value: {groups[0]}' if 'missing_file_1' in groups else diff_property
-                    diff_property = f'{key_tree} was removed' if 'missing_file_2' in groups else diff_property
-                    result.append(diff_property)
-        return '\n'.join(result)
-    return inner(data)
+    return '{\n'+inner(data)+'\n}'
 
 
 def find_differences(file_1, file_2):
-    result = {}
+    changed = []
     keys = sorted(file_1.keys() | file_2.keys())
     for key in keys:
-        value_1, value_2 = file_1.get(key), file_2.get(key) 
+        result = {'key': key}
+        value_1, value_2 = file_1.get(key), file_2.get(key)
         if key not in file_1:
-            result[key] = (value_2, 'missing_file_1') #value missing file_1
+            result['status'] = 'missing_file_1'
+            result['value'] = value_2
         elif key not in file_2:
-            result[key] = (value_1, 'missing_file_2') #value missing file_2
+            result['status'] = 'missing_file_2'
+            result['value'] = value_1
         elif value_1 == value_2:
-            result[key] = (value_1, 'equal') #values file_1, file_2 is equal 
+            result['status'] = 'equal'
+            result['value'] = value_1
         elif isinstance(value_1, dict) and isinstance(value_2, dict):
-            result[key] = (find_differences(value_1, value_2), 'children') #next level tree
+            result['status'] = 'nested'
+            result['nested'] = find_differences(value_1, value_2)
         else:
-            result[key] = (value_1, value_2, 'different values') #valuess file_1, file_2 is not equal 
-    return result
+            result['status'] = 'different'
+            result['value'] = [value_1, value_2]
+        changed.append(result)
+    return changed
