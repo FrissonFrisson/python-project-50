@@ -19,7 +19,7 @@ def main():
     print(generate_diff(args.first_file, args.second_file, args.format))
 
 
-def generate_diff(path_file_1, path_file_2, format_name):
+def generate_diff(path_file_1, path_file_2, format_name = 'stylish'):
     file_1, file_2 = parsing(path_file_1, path_file_2)
     diff = find_differences(file_1, file_2)
     if format_name == 'plain':
