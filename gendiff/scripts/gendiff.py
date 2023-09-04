@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import argparse
-from gendiff import tools
+from gendiff.tools_gendiff import find_differences, parsing
+from gendiff.formating.stylish import format_stylish
+from gendiff.formating.plain import format_plain
+import json
 
 
 def main():
@@ -17,11 +20,13 @@ def main():
 
 
 def gen_diff(path_file_1, path_file_2, format_name):
-    file_1, file_2 = tools.parsing(path_file_1, path_file_2)
-    diff = tools.find_differences(file_1, file_2)
-    if format_name == "plain":
-        return tools.format_plain(diff)
-    return tools.format_stylish(diff)
+    file_1, file_2 = parsing(path_file_1, path_file_2)
+    diff = find_differences(file_1, file_2)
+    if format_name == 'plain':
+        return format_plain(diff)
+    elif format_name == 'json':
+        return json.dumps(diff)
+    return format_stylish(diff)
 
 
 if __name__ == '__main__':
