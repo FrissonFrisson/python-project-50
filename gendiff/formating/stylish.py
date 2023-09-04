@@ -14,7 +14,7 @@ def formating_nested(value, indent, depth=0):
                 result.append(f'{inner(value, depth + 1)}')
             else:
                 result.append(f'{child_indent}{key}: {value}')
-        result.append(indent*(depth - 1) + '}')
+        result.append(indent * (depth - 1) + '}')
         return formating_value('\n'.join(result))
 
     return '{' + '\n' + inner(value, depth)
@@ -40,7 +40,7 @@ def format_stylish(data, symb=' ', count=4):
                 if status == 'different':
                     symb_diff = ['-', '+']
                     for value, symb_diff in zip(diff.get('value'), symb_diff):
-                        value = formating_nested(value, symb * count, depth+1)
+                        value = formating_nested(value, symb * count, depth + 1)
                         result.append(f'{indent}{symb_diff} {key}: {value}')
                 else:
                     result.append(f'{indent}{symb_diff} {key}: {value}')
