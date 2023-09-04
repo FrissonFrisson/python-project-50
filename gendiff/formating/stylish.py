@@ -7,17 +7,17 @@ def formating_nested(value, indent, depth=0):
 
     def inner(value, depth):
         result = []
-        child_indent = indent*depth
+        child_indent = indent * depth
         for key, value in value.items():
             if isinstance(value, dict):
                 result.append(f'{child_indent}{key}: {{')
                 result.append(f'{inner(value, depth + 1)}')
             else:
                 result.append(f'{child_indent}{key}: {value}')
-        result.append(indent*(depth-1)+'}')
+        result.append(indent*(depth - 1) + '}')
         return formating_value('\n'.join(result))
 
-    return '{'+'\n'+inner(value, depth)
+    return '{' + '\n' + inner(value, depth)
 
 
 def format_stylish(data, symb=' ', count=4):
@@ -36,13 +36,13 @@ def format_stylish(data, symb=' ', count=4):
                 result.append(inner(diff['nested'], depth + 1))
                 result.append(f'{indent}{symb_diff} }}')
             else:
-                value = formating_nested(value, symb*count, depth+1)
+                value = formating_nested(value, symb * count, depth + 1)
                 if status == 'different':
                     symb_diff = ['-', '+']
                     for value, symb_diff in zip(diff.get('value'), symb_diff):
-                        value = formating_nested(value, symb*count, depth+1)
+                        value = formating_nested(value, symb * count, depth+1)
                         result.append(f'{indent}{symb_diff} {key}: {value}')
                 else:
                     result.append(f'{indent}{symb_diff} {key}: {value}')
         return '\n'.join(result)
-    return '{\n'+inner(data)+'\n}'
+    return '{\n' + inner(data) + '\n}'
