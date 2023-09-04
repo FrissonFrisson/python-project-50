@@ -16,10 +16,10 @@ def main():
     parser.add_argument("-f", "--format", type=str, help='''
     set format of output: stylish. plain or json''')
     args = parser.parse_args()
-    print(gen_diff(args.first_file, args.second_file, args.format))
+    print(generate_diff(args.first_file, args.second_file, args.format))
 
 
-def gen_diff(path_file_1, path_file_2, format_name):
+def generate_diff(path_file_1, path_file_2, format_name):
     file_1, file_2 = parsing(path_file_1, path_file_2)
     diff = find_differences(file_1, file_2)
     if format_name == 'plain':
