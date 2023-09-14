@@ -1,4 +1,3 @@
-from gendiff.formating.tools_formating import formating_value
 
 
 def format_plain(differences, path=''):
@@ -12,15 +11,15 @@ def format_plain(differences, path=''):
         if status == 'nested':
             nested_diffs = diff.get('nested')
             result.append(format_plain(nested_diffs, path=tree))
-        elif status == 'missing_file_1':
+        elif status == 'added':
             result.append(f"Property '{tree}' was added with value: {value}")
-        elif status == 'missing_file_2':
+        elif status == 'removed':
             result.append(f"Property '{tree}' was removed")
         elif status == 'different':
             old, new = value
             result.append(f"Property '{tree}' was updated. From {old} to {new}")
 
-    return formating_value('\n'.join(result))
+    return format_value('\n'.join(result))
 
 
 def format_complex(value):
@@ -35,3 +34,10 @@ def format_complex(value):
         return format_value
     else:
         return str(value)
+
+
+def format_value(string):
+    string = string.replace('True', 'true')
+    string = string.replace('False', 'false')
+    string = string.replace('None', 'null')
+    return string
