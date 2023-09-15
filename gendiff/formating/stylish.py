@@ -19,8 +19,8 @@ def format_nested(value, indent, depth=0):
     return '{' + '\n' + inner(value, depth)
 
 
-def format_stylish(data, symb=' ', count=4):
-    def inner(data, depth=1):
+def format_stylish(data):
+    def inner(data, symb=' ', count=4, depth=1):
         result = []
         indent = (symb * count * depth)[:-2]
         for diff in data:
@@ -32,7 +32,7 @@ def format_stylish(data, symb=' ', count=4):
             symb_diff = '-' if status == 'removed' else symb_diff
             if status == 'nested':
                 result.append(f'{indent}{symb_diff} {key}: {{')
-                result.append(inner(diff['nested'], depth + 1))
+                result.append(inner(diff['nested'], depth = depth + 1))
                 result.append(f'{indent}{symb_diff} }}')
             else:
                 value = format_nested(value, symb * count, depth + 1)

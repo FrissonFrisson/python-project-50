@@ -1,6 +1,17 @@
 import json
 import yaml
 import os
+from gendiff.formating.stylish import format_stylish
+from gendiff.formating.plain import format_plain
+from gendiff.formating.json import format_json
+
+
+def choose_format(format_name, diff):
+    if format_name == 'plain':
+        return format_plain(diff)
+    elif format_name == 'json':
+        return format_json(diff)
+    return format_stylish(diff)
 
 
 def pars(path):
