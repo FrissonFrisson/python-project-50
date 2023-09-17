@@ -1,6 +1,5 @@
 
-
-def format_plain(differences, path=''):
+def format_recursive(differences, path=''):
     result = []
     for diff in differences:
         key = diff.get('key')
@@ -10,7 +9,7 @@ def format_plain(differences, path=''):
 
         if status == 'nested':
             nested_diffs = diff.get('nested')
-            result.append(format_plain(nested_diffs, path=tree))
+            result.append(format_recursive(nested_diffs, path=tree))
         elif status == 'added':
             result.append(f"Property '{tree}' was added with value: {value}")
         elif status == 'removed':
@@ -19,7 +18,12 @@ def format_plain(differences, path=''):
             old, new = value
             result.append(f"Property '{tree}' was updated. From {old} to {new}")
 
-    return format_value('\n'.join(result))
+    return format_value('\n'.join(result))`
+
+
+def format_plain(differences):
+    return format_recursive(differences)
+
 
 
 def format_complex(value):
