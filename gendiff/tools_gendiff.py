@@ -47,3 +47,9 @@ def find_differences(file, file_2):
             result['status'] = 'different'
         changed.append(result)
     return changed
+
+
+def generate_diff(path_file_1, path_file_2, format_name='stylish'):
+    file_1, file_2 = pars(path_file_1), pars(path_file_2)
+    diff = find_differences(file_1, file_2)
+    return choose_format(format_name, diff)
