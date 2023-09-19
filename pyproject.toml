@@ -1,7 +1,14 @@
 [tool.poetry]
 name = "hexlet-code"
 version = "0.1.0"
-description = ""
+description = "GEN DIFF is a program that looks for differences between two files (file formats must be json or yaml; you can also compare these formats with each other) with the ability to choose what format the comparison result will be in"
+repository = "https://github.com/FrissonFrisson/python-project-50.git"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Unlicense",
+    "Programming Language :: Python :: 3",
+]
 authors = ["FrissonFrisson <compton56rus@gmail.com>"]
 readme = "README.md"
 packages = [{include = "gendiff"}]
