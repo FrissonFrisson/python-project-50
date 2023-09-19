@@ -32,7 +32,7 @@ def format_stylish(data):
             symb_diff = '-' if status == 'removed' else symb_diff
             if status == 'nested':
                 result.append(f'{indent}{symb_diff} {key}: {{')
-                result.append(inner(diff['nested'], depth = depth + 1))
+                result.append(inner(diff['nested'], depth=depth + 1))
                 result.append(f'{indent}{symb_diff} }}')
             else:
                 value = format_nested(value, symb * count, depth + 1)
@@ -52,4 +52,3 @@ def format_value(string):
     string = string.replace('False', 'false')
     string = string.replace('None', 'null')
     return string
-    

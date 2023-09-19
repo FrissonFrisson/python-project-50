@@ -18,12 +18,11 @@ def format_recursive(differences, path=''):
             old, new = value
             result.append(f"Property '{tree}' was updated. From {old} to {new}")
 
-    return format_value('\n'.join(result))
+    return '\n'.join(result)
 
 
 def format_plain(differences):
-    return format_recursive(differences)
-
+    return format_value(format_recursive(differences))
 
 
 def format_complex(value):

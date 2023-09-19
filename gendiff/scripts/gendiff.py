@@ -2,8 +2,6 @@
 import argparse
 from gendiff.tools_gendiff import find_differences, pars, choose_format
 
-import json
-
 
 def main():
     parser = argparse.ArgumentParser(description='''
