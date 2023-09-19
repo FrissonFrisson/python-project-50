@@ -1,6 +1,7 @@
+
+
+
 ### Hexlet tests and linter status:
-
-
 
 [![Actions Status](https://github.com/FrissonFrisson/python-project-50/workflows/hexlet-check/badge.svg)](https://github.com/FrissonFrisson/python-project-50/actions)
 
@@ -50,5 +51,5 @@ $ make install
 # Nested JSON
 [![asciicast](https://asciinema.org/a/NMqKBoxZkYSZDm6HV0v4Yi8g1.svg)](https://asciinema.org/a/NMqKBoxZkYSZDm6HV0v4Yi8g1)
 
-#Formatting
+# Formatting
 [![asciicast](https://asciinema.org/a/89w2yX5CtzOz7mFunfTeNSMq3.svg)](https://asciinema.org/a/89w2yX5CtzOz7mFunfTeNSMq3)
