@@ -18,5 +18,6 @@ from gendiff import generate_diff
     ('tests/fixtures/fixture_7.json', 'tests/fixtures/fixture_8.json', 'json', 'tests/fixtures/fixture_result_7x8_json.txt')
 ])
 def test_generate_diff(file_1, file_2, format, expected_result):
-    result = open(expected_result, "r").read()
+    with open(expected_result, "r") as file:
+        result = file.read()
     assert generate_diff(file_1, file_2, format) == result
