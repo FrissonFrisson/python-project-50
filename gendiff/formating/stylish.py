@@ -8,7 +8,7 @@ def format_value(value, indent, depth=0):
     result.append('{')
     child_indent = indent * depth
     for key, value in value.items():
-        value = format_value(value, indent, depth+1)
+        value = format_value(value, indent, depth + 1)
         result.append(f'{child_indent}{key}: {value}')
     result.append(indent * (depth - 1) + '}')
     return '\n'.join(result)
