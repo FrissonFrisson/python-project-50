@@ -1,3 +1,5 @@
+import json
+
 
 def format_recursive(differences, path=''):
     result = []
@@ -29,13 +31,7 @@ def format_value(value):
     if isinstance(value, dict):
         return "[complex value]"
     elif isinstance(value, str):
-        return f"'{format(value)}'"
-    else:
-        return format(str(value))
-
-
-def format(string):
-    string = string.replace('True', 'true')
-    string = string.replace('False', 'false')
-    string = string.replace('None', 'null')
-    return string
+        return f"'{value}'"
+    elif isinstance(value, bool) or value is None:
+        return json.dumps(value)
+    return value

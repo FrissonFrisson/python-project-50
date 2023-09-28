@@ -1,22 +1,17 @@
+import json
 
 
 def format_value(value, indent, depth=0):
     if not isinstance(value, dict):
-        return format(str(value))
-
-    def inner(value, depth):
-        result = []
-        child_indent = indent * depth
-        for key, value in value.items():
-            if isinstance(value, dict):
-                result.append(f'{child_indent}{key}: {{')
-                result.append(f'{inner(value, depth + 1)}')
-            else:
-                result.append(f'{child_indent}{key}: {format(str(value))}')
-        result.append(indent * (depth - 1) + '}')
-        return '\n'.join(result)
-
-    return '{' + '\n' + inner(value, depth)
+        return format(value)
+    result = []
+    result.append('{')
+    child_indent = indent * depth
+    for key, value in value.items():
+        value = format_value(value, indent, depth+1)
+        result.append(f'{child_indent}{key}: {value}')
+    result.append(indent * (depth - 1) + '}')
+    return '\n'.join(result)
 
 
 def format_recursive(data, symb=' ', count=4, depth=1):
@@ -51,8 +46,7 @@ def format_stylish(data):
     return '{\n' + format_recursive(data) + '\n}'
 
 
-def format(string):
-    string = string.replace('True', 'true')
-    string = string.replace('False', 'false')
-    string = string.replace('None', 'null')
-    return string
+def format(value):
+    if isinstance(value, bool) or value is None:
+        return json.dumps(value)
+    return value

@@ -8,14 +8,14 @@ from gendiff.formating.json import format_json
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='''
-    Compares two configuration files and shows a difference.''')
-    parser.add_argument('first_file', type=str, help='''
-    Path to the first file''')
-    parser.add_argument('second_file', type=str, help='''
-    Path to the second file''')
-    parser.add_argument("-f", "--format", type=str, help='''
-    set format of output: stylish. plain or json''')
+    parser = argparse.ArgumentParser(
+        description='Compares two configuration files and shows a difference.')
+    parser.add_argument(
+        'first_file', type=str, help='Path to the first file')
+    parser.add_argument(
+        'second_file', type=str, help='Path to the second file')
+    parser.add_argument(
+        "-f", "--format", type=str, help='set format: stylish, plain or json')
     args = parser.parse_args()
     return args
 
@@ -36,13 +36,11 @@ def read_file(path):
 
 
 def parse_file(path):
-    filename, file_ext = os.path.splitext(path)
-    file = {}
+    filename_, file_ext = os.path.splitext(path)
     if file_ext == '.json':
-        file = json.loads(read_file(path))
+        return json.loads(read_file(path))
     elif file_ext in ['.yaml', '.yml']:
-        file = yaml.safe_load(read_file(path))
-    return file
+        return yaml.safe_load(read_file(path))
 
 
 def find_differences(file_1, file_2):
